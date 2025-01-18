@@ -31,6 +31,11 @@ func main() {
 			description: "print previous page of map areas",
 			callback:    commandMapb,
 		},
+		"explore": {
+			name:        "explore",
+			description: "Explore a region",
+			callback:    commandExplore,
+		},
 	}
 	conf := config{
 		endpoint: "https://pokeapi.co/api/v2/location-area/",
@@ -42,6 +47,9 @@ func main() {
 	fmt.Print("Pokedex > ")
 	for scanner.Scan() {
 		input := cleanInput(scanner.Text())
+		if len(input) > 1 {
+			conf.subcommands = append(conf.subcommands, input[1])
+		}
 		command, exist := Commands[input[0]]
 		if exist {
 			if err := command.callback(&conf); err != nil {

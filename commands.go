@@ -108,3 +108,37 @@ func commandMapb(conf *config) error {
 	}
 	return nil
 }
+
+func commandExplore(conf *config) error {
+	result := locationarea{}
+	completeEndpoint := conf.endpoint + conf.subcommands[0]
+	if data, exist := conf.cache.Get(completeEndpoint); !exist {
+		req, err := http.NewRequest("GET", completeEndpoint, nil)
+		if err != nil {
+			return err
+		}
+		client := http.Client{}
+		res, err := client.Do(req)
+		if err != nil {
+			return err
+		}
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+		conf.cache.Add(completeEndpoint, body)
+		err = json.Unmarshal(body, &result)
+		if err != nil {
+			return err
+		}
+	} else {
+		err := json.Unmarshal(data, &result)
+		if err != nil {
+			return err
+		}
+	}
+	for _, pokemon := range result.Pokemon_encounters {
+		fmt.Println(pokemon.Pokemon.Name)
+	}
+	return nil
+}
