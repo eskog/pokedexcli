@@ -3,11 +3,12 @@ package main
 import "github.com/eskog/pokedexcli/internal/pokecache"
 
 type config struct {
-	endpoint    string
-	next        string
-	previous    string
-	cache       *pokecache.Cache
-	subcommands []string
+	baseEndpoint string
+	endpoint     string
+	next         string
+	previous     string
+	cache        *pokecache.Cache
+	subcommands  []string
 }
 
 type NamedAPIResource struct {

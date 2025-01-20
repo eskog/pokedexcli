@@ -111,9 +111,10 @@ func commandMapb(conf *config) error {
 
 func commandExplore(conf *config) error {
 	result := locationarea{}
-	completeEndpoint := conf.endpoint + conf.subcommands[0]
+	completeEndpoint := conf.baseEndpoint + conf.subcommands[0]
 	if data, exist := conf.cache.Get(completeEndpoint); !exist {
 		req, err := http.NewRequest("GET", completeEndpoint, nil)
+		fmt.Println("connecting to ", completeEndpoint)
 		if err != nil {
 			return err
 		}

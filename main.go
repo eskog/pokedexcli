@@ -38,10 +38,11 @@ func main() {
 		},
 	}
 	conf := config{
-		endpoint: "https://pokeapi.co/api/v2/location-area/",
-		next:     "",
-		previous: "",
-		cache:    pokecache.NewCache(time.Second * 30),
+		baseEndpoint: "https://pokeapi.co/api/v2/location-area/",
+		endpoint:     "https://pokeapi.co/api/v2/location-area/",
+		next:         "",
+		previous:     "",
+		cache:        pokecache.NewCache(time.Second * 30),
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Print("Pokedex > ")
@@ -53,9 +54,11 @@ func main() {
 		command, exist := Commands[input[0]]
 		if exist {
 			if err := command.callback(&conf); err != nil {
+				fmt.Println("Error occured")
 				fmt.Printf("Error: %v\n", err)
 			}
 		}
 		fmt.Print("Pokedex > ")
+		conf.subcommands = nil
 	}
 }
