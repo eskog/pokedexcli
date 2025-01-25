@@ -7,7 +7,7 @@
 *.dll
 *.so
 *.dylib
-pokedexcli
+bin/*
 
 # Test binary, built with `go test -c`
 *.test
