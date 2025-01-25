@@ -31,9 +31,9 @@ func (c *Cache) cleanLoop(cacheDuration time.Duration) {
 	defer ticker.Stop()
 	for {
 		select {
-		case tick := <-ticker.C:
+		case _ = <-ticker.C:
 			for url, cacheEntry := range c.entry {
-				if tick.Sub(cacheEntry.createdAt) < time.Second*30 {
+				if time.Since(cacheEntry.createdAt) > time.Second*30 {
 					delete(c.entry, url)
 				}
 			}
@@ -52,7 +52,7 @@ func (c *Cache) Add(key string, val []byte) {
 
 func (c *Cache) Get(key string) ([]byte, bool) {
 	data, exists := c.entry[key]
-	if !exists {
+	if !exists || len(data.data) == 0 {
 		return []byte{}, false
 	}
 	fmt.Println("Using cache")
