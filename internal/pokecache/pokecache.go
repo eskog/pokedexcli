@@ -53,7 +53,7 @@ func (c *Cache) Add(key string, val []byte) {
 func (c *Cache) Get(key string) ([]byte, bool) {
 	data, exists := c.entry[key]
 	if !exists || len(data.data) == 0 {
-		return []byte{}, false
+		return nil, false
 	}
 	fmt.Println("Using cache")
 	return data.data, true
