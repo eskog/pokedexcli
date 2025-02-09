@@ -3,12 +3,14 @@ package main
 import "github.com/eskog/pokedexcli/internal/pokecache"
 
 type config struct {
-	baseEndpoint string
-	endpoint     string
-	next         string
-	previous     string
-	cache        *pokecache.Cache
-	subcommands  []string
+	baseEndpoint    string
+	endpoint        string
+	pokemonEndpoint string
+	next            string
+	previous        string
+	pokemon         map[string]pokemon
+	cache           *pokecache.Cache
+	subcommands     []string
 }
 
 type NamedAPIResource struct {
@@ -65,4 +67,8 @@ type result struct {
 	Next     string             `json:"next"`
 	Previous string             `json:"previous"`
 	Results  []NamedAPIResource `json:"results"`
+}
+
+type pokemon struct {
+	Base_experience int `json:"base_experience"`
 }

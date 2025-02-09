@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"math/rand"
 )
 
 type cliCommand struct {
@@ -140,6 +142,53 @@ func commandExplore(conf *config) error {
 	}
 	for _, pokemon := range result.Pokemon_encounters {
 		fmt.Println(pokemon.Pokemon.Name)
+	}
+	return nil
+}
+
+func commandCatch(conf *config) error {
+	result := pokemon{}
+	fmt.Printf("Throwing a Pokeball at %s...\n", conf.subcommands[0])
+	apiEndpoint := conf.pokemonEndpoint + conf.subcommands[0]
+	if data, exist := conf.cache.Get(apiEndpoint); !exist {
+		req, err := http.NewRequest("GET", apiEndpoint, nil)
+		if err != nil {
+			return err
+		}
+		client := http.Client{}
+		res, err := client.Do(req)
+		if err != nil {
+			return err
+		}
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+		conf.cache.Add(apiEndpoint, body)
+		err = json.Unmarshal(body, &result)
+		if err != nil {
+			return err
+		}
+	} else {
+		err := json.Unmarshal(data, &result)
+		if err != nil {
+			return err
+		}
+	}
+
+	catchRoll := rand.Intn(100)
+	for {
+		if result.Base_experience > 100 {
+			result.Base_experience -= result.Base_experience / 10
+		} else {
+			break
+		}
+	}
+	if catchRoll >= result.Base_experience {
+		fmt.Printf("You caught %s\n", conf.subcommands[0])
+		conf.pokemon[conf.subcommands[0]] = result
+	} else {
+		fmt.Printf("%s escaped\n", conf.subcommands[0])
 	}
 	return nil
 }

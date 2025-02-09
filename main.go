@@ -36,13 +36,20 @@ func main() {
 			description: "Explore a region",
 			callback:    commandExplore,
 		},
+		"catch": {
+			name:        "catch",
+			description: "Attempt to catch a pokemon",
+			callback:    commandCatch,
+		},
 	}
 	conf := config{
-		baseEndpoint: "https://pokeapi.co/api/v2/location-area/",
-		endpoint:     "https://pokeapi.co/api/v2/location-area/",
-		next:         "",
-		previous:     "",
-		cache:        pokecache.NewCache(time.Second * 30),
+		baseEndpoint:    "https://pokeapi.co/api/v2/location-area/",
+		endpoint:        "https://pokeapi.co/api/v2/location-area/",
+		pokemonEndpoint: "https://pokeapi.co/api/v2/pokemon/",
+		next:            "",
+		previous:        "",
+		cache:           pokecache.NewCache(time.Second * 30),
+		pokemon:         map[string]pokemon{},
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Print("Pokedex > ")
