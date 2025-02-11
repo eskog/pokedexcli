@@ -1,6 +1,11 @@
 package main
 
-import "github.com/eskog/pokedexcli/internal/pokecache"
+import (
+	"io"
+	"net/http"
+
+	"github.com/eskog/pokedexcli/internal/pokecache"
+)
 
 type config struct {
 	baseEndpoint    string
@@ -11,6 +16,30 @@ type config struct {
 	pokemon         map[string]pokemon
 	cache           *pokecache.Cache
 	subcommands     []string
+}
+
+func makeAPICall(conf *config, endpoint string) ([]byte, error) {
+	cachedData, exists := conf.cache.Get(endpoint)
+	if !exists {
+		req, err := http.NewRequest("GET", endpoint, nil)
+		if err != nil {
+			return nil, err
+		}
+		client := &http.Client{}
+		res, err := client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			return nil, err
+		}
+		conf.cache.Add(endpoint, body)
+		return body, nil
+
+	} else {
+		return cachedData, nil
+	}
 }
 
 type NamedAPIResource struct {
