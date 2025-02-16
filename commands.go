@@ -148,3 +148,14 @@ func commandInspect(conf *config) error {
 	}
 	return nil
 }
+
+func commandPokedex(conf *config) error {
+	if len(conf.pokemon) < 1 {
+		return errors.New("you have not caught any pokemons")
+	}
+	fmt.Println("Your pokedex:")
+	for _, pokemon := range conf.pokemon {
+		fmt.Println("-", pokemon.Name)
+	}
+	return nil
+}
