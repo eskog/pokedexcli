@@ -99,5 +99,24 @@ type result struct {
 }
 
 type pokemon struct {
-	Base_experience int `json:"base_experience"`
+	Name            string      `json:"name"`
+	Base_experience int         `json:"base_experience"`
+	Height          int         `json:"height"`
+	Weight          int         `json:"weight"`
+	Stats           []StatEntry `json:"stats"`
+	Types           []TypeEntry `json:"types"`
+}
+type StatEntry struct {
+	BaseStat int  `json:"base_stat"`
+	Stat     Stat `json:"stat"`
+}
+type Stat struct {
+	Name string `json:"name"`
+}
+type TypeEntry struct {
+	Type Type `json:"type"`
+}
+
+type Type struct {
+	Name string `json:"name"`
 }

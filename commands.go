@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -62,6 +63,9 @@ func commandMapb(conf *config) error {
 	}
 	data := result{}
 	body, err := makeAPICall(conf, conf.previous)
+	if err != nil {
+		return err
+	}
 
 	err = json.Unmarshal(body, &data)
 	if err != nil {
@@ -121,6 +125,26 @@ func commandCatch(conf *config) error {
 		conf.pokemon[conf.subcommands[0]] = result
 	} else {
 		fmt.Printf("%s escaped\n", conf.subcommands[0])
+	}
+	return nil
+}
+
+func commandInspect(conf *config) error {
+	pokemon, exists := conf.pokemon[conf.subcommands[0]]
+	if !exists {
+		return errors.New("pokemon not caught")
+	}
+	fmt.Println("Name:", pokemon.Name)
+	fmt.Println("Height:", pokemon.Height)
+	fmt.Println("Weight:", pokemon.Weight)
+	fmt.Println("Stats:")
+	for _, stat := range pokemon.Stats {
+		fmt.Printf("  - %s: %d\n", stat.Stat.Name, stat.BaseStat)
+	}
+
+	fmt.Println("Types:")
+	for _, t := range pokemon.Types {
+		fmt.Printf("  - %s\n", t.Type.Name)
 	}
 	return nil
 }

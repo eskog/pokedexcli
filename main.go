@@ -41,6 +41,11 @@ func main() {
 			description: "Attempt to catch a pokemon",
 			callback:    commandCatch,
 		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspects a caught pokemon",
+			callback:    commandInspect,
+		},
 	}
 	conf := config{
 		baseEndpoint:    "https://pokeapi.co/api/v2/location-area/",
